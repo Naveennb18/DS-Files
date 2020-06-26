@@ -1,0 +1,103 @@
+Add new User
+
+  - Run the below commands
+
+  sudo su
+
+  /root/bin/new_sftp_user.sh <bank_name>
+
+  - A new user will be added by using /root/bin/new_sftp_user.sh on  both erasmus.
+
+      ls /sftp/<user>
+
+  - After the new user exist on both server the lsyncd process has to be restartet on active server.
+
+      systemctl restart lsyncd
+
+  - For the ds-report-delivery service to be able to move files into the newly generated banks folder (/sftp/<user>) we need to create an SSH key and update the service configuration.
+  - To create the ssh public/private key pair (on a mac running MacOS Catalina or later) go to an empty temporary folder and run the following commands.
+
+    mkdir temp
+    cd temp
+    bank=<<BANK>>
+    bankenvironment=<<ENV>> Example: prod
+    openssl genpkey -algorithm RSA -out ${bank}_sftp_id_rsa -pkeyopt rsa_keygen_bits:4096
+    openssl rsa -in ${bank}_sftp_id_rsa -pubout > ${bank}_sftp_id_rsa.pub
+    ssh-keygen -i -m PKCS8 -f ${bank}_sftp_id_rsa.pub > ${bank}_sftp_id_rsa_pkcs8.pub
+    sed "s/\$/ report-delivery-service-${bankenvironment}/" ${bank}_sftp_id_rsa_pkcs8.pub > ${bank}_sftp_id_rsa.pub; rm ${bank}_sftp_id_rsa_pkcs8.pub
+    gpg --encrypt --armor --trust-model always -r salt-prod@deposit-solutions.com --output ${bank}_sftp_id_rsa.gpg ${bank}_sftp_id_rsa
+
+    Note: Make sure gpg package is installed in the local machine, if not - install with the following command:
+
+      brew install gpg
+
+
+  - Place the public key in /sftp/<user>/.ssh/authorized_keys
+
+
+
+
+
+  - We need to apply the states for all the app servers
+
+    - ssh to the below app servers first and execute the commands as root user
+
+        app1.prod.shared.deposit
+        app2.prod.shared.deposit
+        app3.prod.shared.deposit
+        app4.prod.shared.deposit
+
+      salt-call state.sls files
+
+      - Check the changes that have been applied
+
+
+
+      - Check the version to deploy in the jenkins
+        ls -la /opt/comonea/app/
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Deployment on the Jenkins
+
+  - Login to the Jenkins dashboard - https://deployment-jenkins.deposit-solutions.com/ (Login with AD credentials)
+
+    - Select PROD_SHARED
+
+      - Select PROD_SHARED_deploy_CD
+
+        - Build with parameters and make a build on all the below mentioned target_host
+          - target_host:
+              pp1.prod.shared.deposit
+              app2.prod.shared.deposit
+              app3.prod.shared.deposit
+              app4.prod.shared.deposit
+          - appliocation : ds-report-delivery-service
+          - version : <The version number that we get during the salt state execution>
+
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Adding ip addresses to the firewall on Juniper
+
+  - Login to  http://10.15.7.254/ (Password should be get from MacPass)
+
+  1. Add IP address to the list
+
+    - Policy --> Policy Elements --> Addresses --> List
+
+      - Click on the new from top right corner and add the following details
+
+        - Address Name = EXT_Credorax_199.233.202.0 (Example)
+        - IP Address/Netmask = 199.233.202.0 / 23 (Example)
+
+      - Click on "OK"
+
+  2. Adding to Group Members
+
+    - Policy --> Policy Elements --> Addresses --> Groups
+
+      - Edit the name of the tenant where it's need to be added from the "configure" column
+      - Add the group name that was created in the previous section from right to left
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
