@@ -39,9 +39,33 @@ Add new User
 
   - Place the public key in /sftp/<user>/.ssh/authorized_keys
 
+    $ vi /sftp/<user>/.ssh/authorized_keys --> This step should be done on both the erasmus servers
+
+      - Add the generated public key to the authorized_keys 
+
   - ssh to salt servers
 
-    ssh nnoorbhasha@salt1.prod.infra.deposit
+    - Note: setup the salt before connecting as follows: (https://confluence.deposit-solutions.com/display/INFRA/Salt+resources+and+procedures)
+
+        - Download the gpg file from https://depositsolutions.sharepoint.com/sites/DevOps2/Freigegebene%20Dokumente/General/salt-master-prod-pubkey.gpg
+
+        - Run the gpg file using the command:
+
+            gpg --import salt-master-prod-pubkey.gpg
+
+    $ ssh nnoorbhasha@salt1.prod.infra.deposit
+
+    $ history | grep time
+
+    $ time salt-run fileserver.update
+
+  - Execute the following steps
+
+    sudo salt-call state.sls files
+
+    ls -la /etc/comonea/ds-report-delivery-service/keys/sftp/
+
+    sudo -i
 
 
 
@@ -54,7 +78,7 @@ Add new User
         app3.prod.shared.deposit
         app4.prod.shared.deposit
 
-      salt-call state.sls files
+      $ salt-call state.sls files
 
       - Check the changes that have been applied
 
@@ -74,7 +98,7 @@ Deployment on the Jenkins
 
         - Build with parameters and make a build on all the below mentioned target_host
           - target_host:
-              pp1.prod.shared.deposit
+              app1.prod.shared.deposit
               app2.prod.shared.deposit
               app3.prod.shared.deposit
               app4.prod.shared.deposit
