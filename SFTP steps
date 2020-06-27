@@ -8,6 +8,11 @@ Add new User
 
   - A new user will be added by using /root/bin/new_sftp_user.sh on  both erasmus.
 
+      - ssh to erasmus machine
+
+        ssh erasmus01.rz01.deposit-solutions.com
+        ssh erasmus02.rz01.deposit-solutions.com
+
       ls /sftp/<user>
 
   - After the new user exist on both server the lsyncd process has to be restartet on active server.
@@ -34,7 +39,9 @@ Add new User
 
   - Place the public key in /sftp/<user>/.ssh/authorized_keys
 
+  - ssh to salt servers
 
+    ssh nnoorbhasha@salt1.prod.infra.deposit
 
 
 
