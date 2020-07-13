@@ -1,3 +1,10 @@
+Login to the erasmus servers
+
+  - ssh to erasmus machine
+
+    ssh erasmus01.rz01.deposit-solutions.com
+    ssh erasmus02.rz01.deposit-solutions.com
+
 Add new User
 
   - Run the below commands
@@ -6,18 +13,25 @@ Add new User
 
   /root/bin/new_sftp_user.sh <bank_name>
 
+        [root@erasmus01 nnoorbhasha]# /root/bin/new_sftp_user.sh bib
+        - > /sftp
+        LSYNCTARGET = > 10.15.1.119
+         Bitte ssh-pub-key eingeben: <paste the public key here>
+
   - A new user will be added by using /root/bin/new_sftp_user.sh on  both erasmus.
-
-      - ssh to erasmus machine
-
-        ssh erasmus01.rz01.deposit-solutions.com
-        ssh erasmus02.rz01.deposit-solutions.com
 
       ls /sftp/<user>
 
+      [root@erasmus01 nnoorbhasha]# ls /sftp/bib/
+      archiv  dev  inbox  outbox
+      [root@erasmus01 nnoorbhasha]#
+
   - After the new user exist on both server the lsyncd process has to be restartet on active server.
 
-      systemctl restart lsyncd
+      systemctl restart lsyncd (It should only be done on erasmus01)
+
+      systemctl status lsyncd (No need to check the status on erasmus02)
+
 
   - For the ds-report-delivery service to be able to move files into the newly generated banks folder (/sftp/<user>) we need to create an SSH key and update the service configuration.
   - To create the ssh public/private key pair (on a mac running MacOS Catalina or later) go to an empty temporary folder and run the following commands.
@@ -41,51 +55,97 @@ Add new User
 
     $ vi /sftp/<user>/.ssh/authorized_keys --> This step should be done on both the erasmus servers
 
-      - Add the generated public key to the authorized_keys 
+      - Add the generated public key to the authorized_keys
 
-  - ssh to salt servers
+  - Update the private key on shared-salt repository
 
-    - Note: setup the salt before connecting as follows: (https://confluence.deposit-solutions.com/display/INFRA/Salt+resources+and+procedures)
+    - checkout to feature branch and make the following Changes
 
-        - Download the gpg file from https://depositsolutions.sharepoint.com/sites/DevOps2/Freigegebene%20Dokumente/General/salt-master-prod-pubkey.gpg
+      repo: git@git.prod.infra.deposit:saltstack/shared-salt.git
 
-        - Run the gpg file using the command:
+      $ git checkout -b feature/<TICKET_NUMBER>
 
-            gpg --import salt-master-prod-pubkey.gpg
+    - Add the gpg encrypted private key into git@git.prod.infra.deposit:saltstack/shared-salt.git
 
-    $ ssh nnoorbhasha@salt1.prod.infra.deposit
+      cp <TMP_LOCALTION>/<user>_sftp_id_rsa.gpg pillar/files/keys/ds-report-delivery-service/sftp/${bankenvironment}/
 
-    $ history | grep time
+        - Copy the file (<user>_sftp_id_rsa.gpg) and paste it to "pillar/files/keys/ds-report-delivery-service/sftp/"
 
-    $ time salt-run fileserver.update
+    - Add the file to the files state  by adding a line to "pillar/files/ds-report-delivery-service.sls"
 
-  - Execute the following steps
+      {{ sftp_key("<user>", "NEW_BANKS_BIC") | indent(4) }} <---- THIS IS THE NEW LINE
 
-    sudo salt-call state.sls files
+    - If the bank needs a gpg encryption key also add this key by:
 
-    ls -la /etc/comonea/ds-report-delivery-service/keys/sftp/
+      - copy the .asc file to pillar/files/keys/ds-report-delivery-service/gpg/${bankenvironment}/ in the shared-salt repo (gpg keys can be found here: SFTP Accounts)
+      - add another line to pillar/files/ds-report-delivery-service.sls These files only need to be changed once for all environments (please keep the alphabetic order)
 
-    sudo -i
+        {{ public_gpg("<user>", "NEW_BANKS_BIC") | indent(4) }} <--- THIS IS THE NEW LINE
+
+    çç
+
+  - Update the shared-config-vars repo
+
+    - checkout to feature branch and make the following Changes
+
+      repo:https://git.prod.infra.deposit/deployment/shared-config-vars
+
+      $ git checkout -b feature/<TICKET_NUMBER>
+
+    - edit the file ds-report-delivery-service.yml and add the new bank
+
+        #<user>                                               <--- NEW LINE
+        - "APP_PRODUCTBANK_<NEW_BANKS_BIC>_USERNAME=<user>"   <--- NEW LINE
+
+    - Commit the changes and raise a merge request
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+- ssh to salt servers
+
+  - Note: setup the salt before connecting as follows: (https://confluence.deposit-solutions.com/display/INFRA/Salt+resources+and+procedures)
+
+      - Download the gpg file from https://depositsolutions.sharepoint.com/sites/DevOps2/Freigegebene%20Dokumente/General/salt-master-prod-pubkey.gpg
+
+      - Run the gpg file using the command:
+
+          gpg --import salt-master-prod-pubkey.gpg
+
+  $ ssh nnoorbhasha@salt1.prod.infra.deposit
+
+  $ sudo -i
+
+  $ history | grep time
+
+  $ time salt-run fileserver.update
+
+- Execute the following steps
+
+  sudo salt-call state.sls files
+
+  ls -la /etc/comonea/ds-report-delivery-service/keys/sftp/
+
+  sudo -i
 
 
 
-  - We need to apply the states for all the app servers
+- We need to apply the states for all the app servers
 
-    - ssh to the below app servers first and execute the commands as root user
+  - ssh to the below app servers first and execute the commands as root user
 
-        app1.prod.shared.deposit
-        app2.prod.shared.deposit
-        app3.prod.shared.deposit
-        app4.prod.shared.deposit
+      app1.prod.shared.deposit
+      app2.prod.shared.deposit
+      app3.prod.shared.deposit
+      app4.prod.shared.deposit
 
-      $ salt-call state.sls files
+    $ salt-call state.sls files
 
-      - Check the changes that have been applied
+    - Check the changes that have been applied
 
 
 
-      - Check the version to deploy in the jenkins
-        ls -la /opt/comonea/app/
+    - Check the version to deploy in the jenkins
+      ls -la /opt/comonea/app/
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 Deployment on the Jenkins
