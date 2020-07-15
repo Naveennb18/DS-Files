@@ -1,0 +1,566 @@
+-----> Cleaning up any prior instances of <pve-exporter-debian-10-salt-3000>
+-----> Destroying <pve-exporter-debian-10-salt-3000>...
+       Finished destroying <pve-exporter-debian-10-salt-3000> (0m0.00s).
+-----> Testing <pve-exporter-debian-10-salt-3000>
+-----> Creating <pve-exporter-debian-10-salt-3000>...
+       Sending build context to Docker daemon  377.3kB
+       Step 1/19 : FROM registry.prod.infra.deposit/infrastructure/docker-debian-10-salt/docker-debian-10-salt:3000
+       3000: Pulling from infrastructure/docker-debian-10-salt/docker-debian-10-salt
+       e9afc4f90ab0: Pulling fs layer
+       eb33f34dfdb1: Pulling fs layer
+       076632938900: Pulling fs layer
+       495713eb7583: Pulling fs layer
+       b64737d3e70f: Pulling fs layer
+       7be8cb582482: Pulling fs layer
+       ad3cf93b8669: Pulling fs layer
+       300115cb1c7d: Pulling fs layer
+       7be8cb582482: Waiting
+       495713eb7583: Waiting
+       ad3cf93b8669: Waiting
+       b64737d3e70f: Waiting
+       300115cb1c7d: Waiting
+       e9afc4f90ab0: Verifying Checksum
+       e9afc4f90ab0: Download complete
+       e9afc4f90ab0: Pull complete
+       eb33f34dfdb1: Verifying Checksum
+       eb33f34dfdb1: Download complete
+       eb33f34dfdb1: Pull complete
+       b64737d3e70f: Verifying Checksum
+       b64737d3e70f: Download complete
+       495713eb7583: Verifying Checksum
+       495713eb7583: Download complete
+       ad3cf93b8669: Verifying Checksum
+       ad3cf93b8669: Download complete
+       300115cb1c7d: Verifying Checksum
+       300115cb1c7d: Download complete
+       7be8cb582482: Verifying Checksum
+       7be8cb582482: Download complete
+       076632938900: Verifying Checksum
+       076632938900: Download complete
+       076632938900: Pull complete
+       495713eb7583: Pull complete
+       b64737d3e70f: Pull complete
+       7be8cb582482: Pull complete
+       ad3cf93b8669: Pull complete
+       300115cb1c7d: Pull complete
+       Digest: sha256:7a141bddf476b1259e4eef832c4208835ee238b9df000e6239e8ec0b360ec2f0
+       Status: Downloaded newer image for registry.prod.infra.deposit/infrastructure/docker-debian-10-salt/docker-debian-10-salt:3000
+        ---> bc6e721fc202
+       Step 2/19 : RUN [ ! -f "/sbin/initctl" ] || dpkg-divert --local --rename --add /sbin/initctl && ln -sf /bin/true /sbin/initctl
+        ---> Running in 25d7f1dffe8d
+       Removing intermediate container 25d7f1dffe8d
+        ---> f1c27882fbd5
+       Step 3/19 : ENV DEBIAN_FRONTEND noninteractive
+        ---> Running in e025b92c2f12
+       Removing intermediate container e025b92c2f12
+        ---> 6e117b7a23d8
+       Step 4/19 : ENV container docker
+        ---> Running in 9905d280244f
+       Removing intermediate container 9905d280244f
+        ---> 1a0585eb0214
+       Step 5/19 : RUN apt-get update
+        ---> Running in 5073dc284eb4
+       Hit:1 http://deb.debian.org/debian buster InRelease
+       Get:2 http://security.debian.org/debian-security buster/updates InRelease [65.4 kB]
+       Hit:3 http://repo.saltstack.com/py3/debian/10/amd64/3000 buster InRelease
+       Get:4 http://deb.debian.org/debian buster-updates InRelease [51.9 kB]
+       Get:5 http://security.debian.org/debian-security buster/updates/main amd64 Packages [208 kB]
+       Fetched 325 kB in 2s (194 kB/s)
+       Reading package lists...
+       Removing intermediate container 5073dc284eb4
+        ---> e4398eee7a7e
+       Step 6/19 : RUN apt-get install -y sudo openssh-server curl lsb-release
+        ---> Running in fa7f4c6f646e
+       Reading package lists...
+       Building dependency tree...
+       Reading state information...
+       curl is already the newest version (7.64.0-4+deb10u1).
+       lsb-release is already the newest version (10.2019051400).
+       openssh-server is already the newest version (1:7.9p1-10+deb10u2).
+       sudo is already the newest version (1.8.27-1+deb10u2).
+       0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.
+       Removing intermediate container fa7f4c6f646e
+        ---> 2acedec6f88a
+       Step 7/19 : RUN if ! getent passwd kitchen; then                 useradd -d /home/kitchen -m -s /bin/bash -p '*' kitchen;               fi
+        ---> Running in 2c5e99aff024
+       Removing intermediate container 2c5e99aff024
+        ---> 25d9139aa33c
+       Step 8/19 : RUN echo "kitchen ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+        ---> Running in 75858d024af0
+       Removing intermediate container 75858d024af0
+        ---> 3bbb25303baf
+       Step 9/19 : RUN echo "Defaults !requiretty" >> /etc/sudoers
+        ---> Running in cdf4aa990549
+       Removing intermediate container cdf4aa990549
+        ---> bb7e9de74d69
+       Step 10/19 : RUN mkdir -p /home/kitchen/.ssh
+        ---> Running in 32d9a30ec41e
+       Removing intermediate container 32d9a30ec41e
+        ---> 9e25459259ad
+       Step 11/19 : RUN chown -R kitchen /home/kitchen/.ssh
+        ---> Running in 8a708becafe8
+       Removing intermediate container 8a708becafe8
+        ---> e6a365b51ced
+       Step 12/19 : RUN chmod 0700 /home/kitchen/.ssh
+        ---> Running in 59433b8acc34
+       Removing intermediate container 59433b8acc34
+        ---> 65c5591ee256
+       Step 13/19 : RUN touch /home/kitchen/.ssh/authorized_keys
+        ---> Running in 17bd0fe82456
+       Removing intermediate container 17bd0fe82456
+        ---> 16a9736e3883
+       Step 14/19 : RUN chown kitchen /home/kitchen/.ssh/authorized_keys
+        ---> Running in eadad1e9d788
+       Removing intermediate container eadad1e9d788
+        ---> 18606e1a47fd
+       Step 15/19 : RUN chmod 0600 /home/kitchen/.ssh/authorized_keys
+        ---> Running in 1510e6420ce1
+       Removing intermediate container 1510e6420ce1
+        ---> b3b708cb9460
+       Step 16/19 : RUN mkdir -p /run/sshd
+        ---> Running in 3e2647a74bc0
+       Removing intermediate container 3e2647a74bc0
+        ---> 3abee030dae7
+       Step 17/19 : RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen
+        ---> Running in 8710e58a3940
+       Removing intermediate container 8710e58a3940
+        ---> 1d8b3bcd0141
+       Step 18/19 : RUN locale-gen
+        ---> Running in 7732a622e9d6
+       Generating locales (this might take a while)...
+         en_US.UTF-8... done
+       Generation complete.
+       Removing intermediate container 7732a622e9d6
+        ---> 7c68cfa30bbe
+       Step 19/19 : RUN echo ssh-rsa\ AAAAB3NzaC1yc2EAAAADAQABAAABAQC3wOKEJlC9n3vlJ3TIdTQ5zP6llk7GUDB7h9ZfEvB1T\+fy7JN0KJz0Oe\+nHnHVUaGST8JGTMDs2bDcHGK1X5121wKsTL087/96O5LnXgyfazfLghdy/qE8VMxIoWI4kmO3cEFiAvMdjaCX3X/jmcxR5Q0L1XGpKtFjqgVC67TAWuBLIZsxWSn\+8qwCY5jZgDXlft8jIqkQHZJO7KeXiFJT2NuvMJGozPP3AyTRTxK7D/STo0rxdQbbyrzZ\+TB3RECj5/\+9HzaKjWAvzGEmJion\+8ht1QSoHC/tIpgvGbJTnELevEF3Hz7\+etDG5Nz8eRok0qOidFolN/exUH9DOkF5\ kitchen_docker_key >> /home/kitchen/.ssh/authorized_keys
+        ---> Running in 980a1aa5ebf8
+       Removing intermediate container 980a1aa5ebf8
+        ---> 9d91f922ccf9
+       Successfully built 9d91f922ccf9
+       8b4f1aa11ffe4fcddc130087ea935ca05896bbbcdeeab9f925524de9ac47ab0e
+       0.0.0.0:32770
+       Waiting for SSH service on localhost:32770, retrying in 3 seconds
+       [SSH] Established
+       Finished creating <pve-exporter-debian-10-salt-3000> (2m28.48s).
+-----> Converging <pve-exporter-debian-10-salt-3000>...
+       Preparing files for transfer
+       Preparing salt-minion
+       Preparing pillars into /srv/pillar
+       pillars-from-files is deprecated in favor of pillars_from_files
+       Preparing formula: pve_exporter from /test
+       Preparing state_top
+       Preparing scripts into /etc/salt/scripts
+       You asked for latest and you have 3000.3 installed, sweet!
+       Transferring files to <pve-exporter-debian-10-salt-3000>
+       Install External Dependencies
+       Content of /tmp/kitchen//srv/salt :
+       total 16
+       drwxr-xr-x 3 kitchen kitchen 4096 Jul  2 13:46 .
+       drwxr-xr-x 4 kitchen kitchen 4096 Jul  2 13:46 ..
+       drwxr-xr-x 3 kitchen kitchen 4096 Jul  2 13:46 pve_exporter
+       -rw-r--r-- 1 kitchen kitchen   34 Jul  2 13:46 top.sls
+       local:
+       ----------
+                 ID: pve_exporter-create-user
+           Function: user.present
+               Name: pve_exporter
+             Result: True
+            Comment: New user pve_exporter created
+            Started: 13:46:18.634678
+           Duration: 52.63 ms
+            Changes:
+              ----------
+              fullname:
+              gid:
+                  998
+              groups:
+                  - pve_exporter
+              home:
+              homephone:
+              name:
+                  pve_exporter
+              other:
+              passwd:
+                  x
+              roomnumber:
+              shell:
+                  /bin/false
+              uid:
+                  998
+              workphone:
+       ----------
+                 ID: pve_exporter-create-group
+           Function: group.present
+               Name: pve_exporter
+             Result: True
+            Comment: The following group attributes are set to be changed:
+              members: ['pve_exporter']
+            Started: 13:46:18.688802
+           Duration: 56.056 ms
+            Changes:
+              ----------
+              Final:
+                  All changes applied successfully
+       ----------
+                 ID: pve_exporter-config-dir
+           Function: file.directory
+               Name: /etc/pve_exporter
+             Result: True
+            Comment: Directory /etc/pve_exporter updated
+            Started: 13:46:18.748772
+           Duration: 6.895 ms
+            Changes:
+              ----------
+              /etc/pve_exporter:
+                  New Dir
+       ----------
+                 ID: python-pip
+           Function: pkg.installed
+             Result: True
+            Comment: The following packages were installed/updated: python-pip
+            Started: 13:46:24.266400
+           Duration: 23598.772 ms
+            Changes:
+              ----------
+              libpython-all-dev:
+                  ----------
+                  new:
+                      2.7.16-1
+                  old:
+              libpython-dev:
+                  ----------
+                  new:
+                      2.7.16-1
+                  old:
+              libpython-stdlib:
+                  ----------
+                  new:
+                      2.7.16-1
+                  old:
+              libpython2-dev:
+                  ----------
+                  new:
+                      2.7.16-1
+                  old:
+              libpython2-stdlib:
+                  ----------
+                  new:
+                      2.7.16-1
+                  old:
+              libpython2.7:
+                  ----------
+                  new:
+                      2.7.16-2+deb10u1
+                  old:
+              libpython2.7-dev:
+                  ----------
+                  new:
+                      2.7.16-2+deb10u1
+                  old:
+              libpython2.7-minimal:
+                  ----------
+                  new:
+                      2.7.16-2+deb10u1
+                  old:
+              libpython2.7-stdlib:
+                  ----------
+                  new:
+                      2.7.16-2+deb10u1
+                  old:
+              python:
+                  ----------
+                  new:
+                      2.7.16-1
+                  old:
+              python-all:
+                  ----------
+                  new:
+                      2.7.16-1
+                  old:
+              python-all-dev:
+                  ----------
+                  new:
+                      2.7.16-1
+                  old:
+              python-asn1crypto:
+                  ----------
+                  new:
+                      0.24.0-1
+                  old:
+              python-cffi-backend:
+                  ----------
+                  new:
+                      1.12.2-1
+                  old:
+              python-configparser:
+                  ----------
+                  new:
+                      3.5.0b2-1
+                  old:
+              python-crypto:
+                  ----------
+                  new:
+                      2.6.1-9+b1
+                  old:
+              python-cryptography:
+                  ----------
+                  new:
+                      2.6.1-3+deb10u2
+                  old:
+              python-dbus:
+                  ----------
+                  new:
+                      1.2.8-3
+                  old:
+              python-dev:
+                  ----------
+                  new:
+                      2.7.16-1
+                  old:
+              python-entrypoints:
+                  ----------
+                  new:
+                      0.3-1
+                  old:
+              python-enum34:
+                  ----------
+                  new:
+                      1.1.6-2
+                  old:
+              python-gi:
+                  ----------
+                  new:
+                      3.30.4-1
+                  old:
+              python-ipaddress:
+                  ----------
+                  new:
+                      1.0.17-1
+                  old:
+              python-keyring:
+                  ----------
+                  new:
+                      17.1.1-1
+                  old:
+              python-keyrings.alt:
+                  ----------
+                  new:
+                      3.1.1-1
+                  old:
+              python-minimal:
+                  ----------
+                  new:
+                      2.7.16-1
+                  old:
+              python-pip:
+                  ----------
+                  new:
+                      18.1-5
+                  old:
+              python-pkg-resources:
+                  ----------
+                  new:
+                      40.8.0-1
+                  old:
+              python-secretstorage:
+                  ----------
+                  new:
+                      2.3.1-2
+                  old:
+              python-setuptools:
+                  ----------
+                  new:
+                      40.8.0-1
+                  old:
+              python-six:
+                  ----------
+                  new:
+                      1.12.0-1
+                  old:
+              python-wheel:
+                  ----------
+                  new:
+                      0.32.3-2
+                  old:
+              python-xdg:
+                  ----------
+                  new:
+                      0.25-5
+                  old:
+              python2:
+                  ----------
+                  new:
+                      2.7.16-1
+                  old:
+              python2-dev:
+                  ----------
+                  new:
+                      2.7.16-1
+                  old:
+              python2-minimal:
+                  ----------
+                  new:
+                      2.7.16-1
+                  old:
+              python2.7:
+                  ----------
+                  new:
+                      2.7.16-2+deb10u1
+                  old:
+              python2.7-dev:
+                  ----------
+                  new:
+                      2.7.16-2+deb10u1
+                  old:
+              python2.7-minimal:
+                  ----------
+                  new:
+                      2.7.16-2+deb10u1
+                  old:
+       ----------
+                 ID: pve_exporter-install-binary
+           Function: pip.installed
+               Name: prometheus-pve-exporter
+             Result: True
+            Comment: All packages were successfully installed
+            Started: 13:46:54.052105
+           Duration: 9986.434 ms
+            Changes:
+              ----------
+              prometheus-pve-exporter==1.3.2:
+                  Installed
+       ----------
+                 ID: pve_exporter-install-service
+           Function: file.managed
+               Name: /etc/systemd/system/pve_exporter.service
+             Result: True
+            Comment: File /etc/systemd/system/pve_exporter.service updated
+            Started: 13:47:04.041591
+           Duration: 35.13 ms
+            Changes:
+              ----------
+              diff:
+                  New file
+              mode:
+                  0644
+       ----------
+                 ID: pve_exporter-service-start
+           Function: service.running
+               Name: pve_exporter
+             Result: True
+            Comment: Service pve_exporter has been enabled, and is running
+            Started: 13:47:04.077960
+           Duration: 341.894 ms
+            Changes:
+              ----------
+              pve_exporter:
+                  True
+       ----------
+                 ID: pve_exporter-config
+           Function: file.managed
+               Name: /etc/pve_exporter/pve.yml
+             Result: True
+            Comment: File /etc/pve_exporter/pve.yml updated
+            Started: 13:47:04.421006
+           Duration: 15.225 ms
+            Changes:
+              ----------
+              diff:
+                  New file
+              group:
+                  pve_exporter
+              mode:
+                  0640
+              user:
+                  pve_exporter
+       ----------
+                 ID: pve_exporter-service
+           Function: service.running
+               Name: pve_exporter
+             Result: True
+            Comment: Service restarted
+            Started: 13:47:04.973788
+           Duration: 47.141 ms
+            Changes:
+              ----------
+              pve_exporter:
+                  True
+
+       Summary for local
+       ------------
+       Succeeded: 9 (changed=9)
+       Failed:    0
+       ------------
+       Total states run:     9
+       Total run time:  34.140 s
+       Downloading files from <pve-exporter-debian-10-salt-3000>
+       Finished converging <pve-exporter-debian-10-salt-3000> (0m59.13s).
+-----> Setting up <pve-exporter-debian-10-salt-3000>...
+       Finished setting up <pve-exporter-debian-10-salt-3000> (0m0.00s).
+-----> Verifying <pve-exporter-debian-10-salt-3000>...
+       Loaded tests from {:path=>".test.test.integration.default"}
+
+Profile: tests from {:path=>"/test/test/integration/default"} (tests from {:path=>".test.test.integration.default"})
+Version: (not specified)
+Target:  ssh://kitchen@localhost:32770
+
+  Directory /etc/pve_exporter
+     ✔  should be directory
+     ✔  type should eq :directory
+  File /etc/pve_exporter/pve.yml
+     ✔  should be file
+     ✔  should be owned by "pve_exporter"
+     ✔  should be grouped into "pve_exporter"
+     ✔  mode should cmp == "0640"
+     ✔  content should include "    user: prometheus@pve"
+     ✔  content should include "    password: sEcr3T!"
+     ✔  content should include "    verify_ssl: False"
+  Service pve_exporter
+     ✔  should be installed
+     ✔  should be enabled
+     ✔  should be running
+  http GET on http://pve-exporter-formula.ci.local:9221/metrics
+     ✔  status should eq 200
+     ✔  body should match /# HELP process_start_time_seconds Start time of the process since unix epoch in seconds.*/
+     ✔  body should match /pve_request_errors_total.*/
+
+Test Summary: 15 successful, 0 failures, 0 skipped
+       Finished verifying <pve-exporter-debian-10-salt-3000> (0m1.02s).
+-----> Destroying <pve-exporter-debian-10-salt-3000>...
+       PID                 USER                TIME                COMMAND
+       10698               root                0:00                /lib/systemd/systemd
+       10764               root                0:00                /lib/systemd/systemd-journald
+       10772               root                0:00                /lib/systemd/systemd-udevd
+       10803               root                0:00                {salt-master} /usr/bin/python3 /usr/bin/salt-master
+       10804               104                 0:00                /usr/bin/dbus-daemon --system --address=systemd: --nofork --nopidfile --systemd-activation --syslog-only
+       10805               root                0:00                /lib/systemd/systemd-logind
+       10809               root                0:00                /sbin/agetty -o -p -- \u --noclear tty1 linux
+       10810               root                0:00                /usr/sbin/sshd -D
+       10818               root                0:00                {salt-master} /usr/bin/python3 /usr/bin/salt-master
+       10823               root                0:00                {salt-minion} /usr/bin/python3 /usr/bin/salt-minion
+       10824               root                0:00                {salt-master} /usr/bin/python3 /usr/bin/salt-master
+       10827               root                0:00                {salt-master} /usr/bin/python3 /usr/bin/salt-master
+       10828               root                0:02                {salt-master} /usr/bin/python3 /usr/bin/salt-master
+       10829               root                0:00                {salt-master} /usr/bin/python3 /usr/bin/salt-master
+       10830               root                0:00                {salt-master} /usr/bin/python3 /usr/bin/salt-master
+       10831               root                0:06                {salt-master} /usr/bin/python3 /usr/bin/salt-master
+       10838               root                0:00                {salt-master} /usr/bin/python3 /usr/bin/salt-master
+       10839               root                0:06                {salt-master} /usr/bin/python3 /usr/bin/salt-master
+       10844               root                0:06                {salt-master} /usr/bin/python3 /usr/bin/salt-master
+       10847               root                0:06                {salt-master} /usr/bin/python3 /usr/bin/salt-master
+       10848               root                0:06                {salt-master} /usr/bin/python3 /usr/bin/salt-master
+       10885               root                0:06                {salt-minion} /usr/bin/python3 /usr/bin/salt-minion
+       10894               root                0:00                {salt-minion} /usr/bin/python3 /usr/bin/salt-minion
+       10897               root                0:00                sshd: kitchen [priv]
+       10900               1000                0:00                /lib/systemd/systemd --user
+       10902               1000                0:00                (sd-pam)
+       10916               1000                0:00                sshd: kitchen@notty
+       10918               root                0:00                sshd: kitchen [priv]
+       10924               1000                0:00                sshd: kitchen@notty
+       13338               998                 0:00                {pve_exporter} /usr/bin/python3 /usr/local/bin/pve_exporter /etc/pve_exporter/pve.yml
+       13341               root                0:00                sshd: kitchen [priv]
+       13347               1000                0:00                sshd: kitchen@notty
+       8b4f1aa11ffe4fcddc130087ea935ca05896bbbcdeeab9f925524de9ac47ab0e
+       8b4f1aa11ffe4fcddc130087ea935ca05896bbbcdeeab9f925524de9ac47ab0e
+       Finished destroying <pve-exporter-debian-10-salt-3000> (0m0.74s).
+       Finished testing <pve-exporter-debian-10-salt-3000> (3m29.43s).

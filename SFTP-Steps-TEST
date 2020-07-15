@@ -1,36 +1,33 @@
-Login to the erasmus servers
+Login to the daad server
 
-  - ssh to erasmus machine
+  - ssh to daad machine
 
-    ssh erasmus01.rz01.deposit-solutions.com
-    ssh erasmus02.rz01.deposit-solutions.com
+    ssh daad.rz01.deposit-solutions.com
 
 Add new User
 
   - Run the below commands
 
-  sudo su
+    sudo -i
 
-  /root/bin/new_sftp_user.sh <bank_name>
+    /root/bin/new_sftp_user.sh <bank_name>
 
-        [root@erasmus01 nnoorbhasha]# /root/bin/new_sftp_user.sh bib
-        - > /sftp
-        LSYNCTARGET = > 10.15.1.119
-         Bitte ssh-pub-key eingeben: <paste the public key here>
+      - It will open up vi editor
+      - Paste the given public key from the ticket
 
-  - A new user will be added by using /root/bin/new_sftp_user.sh on  both erasmus.
+  - A new user will be added by using /root/bin/new_sftp_user.sh on daad
 
       ls /sftp/<user>
 
-      [root@erasmus01 nnoorbhasha]# ls /sftp/bib/
+      [root@daad sftp]# ls /sftp/bib/
       archiv  dev  inbox  outbox
-      [root@erasmus01 nnoorbhasha]#
+      [root@daad sftp]#
 
   - After the new user exist on both server the lsyncd process has to be restartet on active server.
 
-      systemctl restart lsyncd (It should only be done on erasmus01)
+      systemctl restart lsyncd
 
-      systemctl status lsyncd (No need to check the status on erasmus02)
+
 
 
   - For the ds-report-delivery service to be able to move files into the newly generated banks folder (/sftp/<user>) we need to create an SSH key and update the service configuration.
@@ -53,9 +50,9 @@ Add new User
 
   - Place the public key in /sftp/<user>/.ssh/authorized_keys
 
-    $ vi /sftp/<user>/.ssh/authorized_keys --> This step should be done on both the erasmus servers
+    $ vi /sftp/<user>/.ssh/authorized_keys
 
-      - Add the generated public key to the authorized_keys
+      - Added the generated public key to the authorized_keys
 
   - Update the private key on shared-salt repository
 
@@ -81,8 +78,6 @@ Add new User
       - add another line to pillar/files/ds-report-delivery-service.sls These files only need to be changed once for all environments (please keep the alphabetic order)
 
         {{ public_gpg("<user>", "NEW_BANKS_BIC") | indent(4) }} <--- THIS IS THE NEW LINE
-
-    çç
 
   - Update the shared-config-vars repo
 
@@ -111,7 +106,7 @@ Add new User
 
           gpg --import salt-master-prod-pubkey.gpg
 
-  $ ssh nnoorbhasha@salt1.prod.infra.deposit
+  $ ssh nnoorbhasha@salt1.test.infra.deposit
 
   $ sudo -i
 
@@ -119,50 +114,48 @@ Add new User
 
   $ time salt-run fileserver.update
 
-- Execute the following steps
-
-  sudo salt-call state.sls files
-
-  ls -la /etc/comonea/ds-report-delivery-service/keys/sftp/
-
-  sudo -i
-
-
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 - We need to apply the states for all the app servers
 
   - ssh to the below app servers first and execute the commands as root user
 
-      app1.prod.shared.deposit
-      app2.prod.shared.deposit
-      app3.prod.shared.deposit
-      app4.prod.shared.deposit
+      app1.stg.shared.deposit
+
+    $ sudo -i
 
     $ salt-call state.sls files
 
+    $ ls -la /etc/comonea/ds-report-delivery-service/keys/sftp/
+
+      - Newly added key should be there in the list "<BIC_Code>_sftp_id_rsa"
+
     - Check the changes that have been applied
-
-
 
     - Check the version to deploy in the jenkins
       ls -la /opt/comonea/app/
 
+        - Example:
+
+          - /usr/lib/comonea/dist/ds-report-delivery-service/report-delivery-service-1.0.2.jar (Version = 1.0.2)
+
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 Deployment on the Jenkins
 
-  - Login to the Jenkins dashboard - https://deployment-jenkins.deposit-solutions.com/ (Login with AD credentials)
+  - Login to the Jenkins dashboard - https://deployment-jenkins.deposit-solutions.com/view/STG_SHARED/job/STG_SHARED_M_deploy/ (Login with AD credentials)
 
-    - Select PROD_SHARED
+    - Select STG_SHARED
 
       - Select PROD_SHARED_deploy_CD
 
         - Build with parameters and make a build on all the below mentioned target_host
+
           - target_host:
-              app1.prod.shared.deposit
-              app2.prod.shared.deposit
-              app3.prod.shared.deposit
-              app4.prod.shared.deposit
-          - appliocation : ds-report-delivery-service
+              app1.stg.shared.deposit
+              
+          - Application:
+              ds-report-delivery-service
+
           - version : <The version number that we get during the salt state execution>
 
 
@@ -188,7 +181,7 @@ Adding ip addresses to the firewall on Juniper
 
     - Policy --> Policy Elements --> Addresses --> Groups
 
-      - Edit the name of the tenant where it's need to be added from the "configure" column
+      - Edit the name of the tenant where it's need to be added from the "configure" column (EXT_SFTP_TENANTS2)
       - Add the group name that was created in the previous section from right to left
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
