@@ -23,13 +23,6 @@ Add new User
       archiv  dev  inbox  outbox
       [root@daad sftp]#
 
-  - After the new user exist on both server the lsyncd process has to be restartet on active server.
-
-      systemctl restart lsyncd
-
-
-
-
   - For the ds-report-delivery service to be able to move files into the newly generated banks folder (/sftp/<user>) we need to create an SSH key and update the service configuration.
   - To create the ssh public/private key pair (on a mac running MacOS Catalina or later) go to an empty temporary folder and run the following commands.
 
@@ -146,13 +139,13 @@ Deployment on the Jenkins
 
     - Select STG_SHARED
 
-      - Select PROD_SHARED_deploy_CD
+      - Select STG_SHARED_M_deploy
 
         - Build with parameters and make a build on all the below mentioned target_host
 
           - target_host:
               app1.stg.shared.deposit
-              
+
           - Application:
               ds-report-delivery-service
 

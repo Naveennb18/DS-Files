@@ -18,6 +18,12 @@ Add new User
         LSYNCTARGET = > 10.15.1.119
          Bitte ssh-pub-key eingeben: <paste the public key here>
 
+         Note:
+
+            - sometime we may get public key in the format of ssh2. Here is the steps to convert it
+
+                ssh-keygen -i -f ssh2.pub > openssh.pub
+
   - A new user will be added by using /root/bin/new_sftp_user.sh on  both erasmus.
 
       ls /sftp/<user>
@@ -118,32 +124,33 @@ Add new User
   $ time salt-run fileserver.update
 
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Execute the state module
 
-- We need to apply the states for all the app servers
+  - We need to apply the states for all the app servers
 
-  - ssh to the below app servers first and execute the commands as root user
+    - ssh to the below app servers first and execute the commands as root user
 
-      app1.prod.shared.deposit
-      app2.prod.shared.deposit
-      app3.prod.shared.deposit
-      app4.prod.shared.deposit
+        app1.prod.shared.deposit
+        app2.prod.shared.deposit
+        app3.prod.shared.deposit
+        app4.prod.shared.deposit
 
-    $ sudo -i
+      $ sudo -i
 
-    $ salt-call state.sls files
+      $ salt-call state.sls files
 
-    $ ls -la /etc/comonea/ds-report-delivery-service/keys/sftp/
+      $ ls -la /etc/comonea/ds-report-delivery-service/keys/sftp/
 
-      - Newly added key should be there in the list "<BIC_Code>_sftp_id_rsa"
+        - Newly added key should be there in the list "<BIC_Code>_sftp_id_rsa"
 
-    - Check the changes that have been applied
+      - Check the changes that have been applied
 
-    - Check the version to deploy in the jenkins
-      ls -la /opt/comonea/app/
+      - Check the version to deploy in the jenkins
+        ls -la /opt/comonea/app/
 
-        - Example:
+          - Example:
 
-          - /usr/lib/comonea/dist/ds-report-delivery-service/report-delivery-service-1.0.2.jar (Version = 1.0.2)
+            - /usr/lib/comonea/dist/ds-report-delivery-service/report-delivery-service-1.0.2.jar (Version = 1.0.2)
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 Deployment on the Jenkins
@@ -190,3 +197,31 @@ Adding ip addresses to the firewall on Juniper
       - Add the group name that was created in the previous section from right to left
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Add files to the erasmus servers from local machine
+
+  $ scp myfile.txt remoteuser@remoteserver:/remote/folder/
+
+  Ex: scp test.csv nnoorbhasha@erasmus01.rz01.deposit-solutions.com:/tmp/
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+TEST
+----
+
+  - Test if the setup is Successful or Not
+
+      1. Login to the app servers
+
+        % ssh nnoorbhasha@app1.prod.shared.deposit
+
+        % sudo -i
+
+        % cd /etc/comonea/ds-report-delivery-service/keys/sftp
+
+        % sftp -i PSANIT3P_sftp_id_rsa bpsa@erasmus01.rz01.deposit-solutions.com
+
+        % sftp -i BLIBLV22XXX_sftp_id_rsa bib@erasmus01.rz01.deposit-solutions.com
+
+
+        sftp -i bib_sftp_id_rsa bib@app1.prod.shared.deposit
