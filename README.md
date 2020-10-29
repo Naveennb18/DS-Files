@@ -1,2 +1,2 @@
 # DS-Files
-Files related to DS deployments and process
+Files related to DS SFTP Setup
