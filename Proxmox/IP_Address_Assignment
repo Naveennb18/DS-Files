@@ -1,0 +1,12 @@
+https://netbox.prod.infra.deposit/
+
+  - Select "Sites"
+  - Datacenter3 (If it is DC3)
+  - Select "Prefixes"
+  - Check on Role column to find out the required Type of the VM
+    - 10.17.8.0/24 (For Test)
+  - click on IP Addresses
+    - There will be a list of free addresses
+    - Click on the free ip and add the DNS name and Create
+  - The new IP will get assigned to the desired VM
+  
