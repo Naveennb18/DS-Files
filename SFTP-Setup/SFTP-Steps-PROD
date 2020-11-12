@@ -2,8 +2,8 @@ Login to the erasmus servers
 
   - ssh to erasmus machine
 
-    ssh erasmus01.rz01.deposit-solutions.com
-    ssh erasmus02.rz01.deposit-solutions.com
+    ssh nnoorbhasha@erasmus01.rz01.deposit-solutions.com
+    ssh nnoorbhasha@erasmus02.rz01.deposit-solutions.com
 
 Add new User
 
@@ -225,3 +225,12 @@ TEST
 
 
         sftp -i bib_sftp_id_rsa bib@app1.prod.shared.deposit
+
+-----------------------------------------------------------------------------------------
+user: swkbank
+server: xfer.deposit-solutions.com
+IP: 212.12.36.121
+
+
+connect using:  sftp swkbank@xfer.deposit-solutions.com
+-----------------------------------------------------------------------------------------
