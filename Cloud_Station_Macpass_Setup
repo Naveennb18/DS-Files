@@ -1,0 +1,11 @@
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+
+Download Cloud Station from TI GDrive - https://drive.google.com/file/d/1fs-5h4gK17YSkosl9Qm3SzAQ8F-qKh8Q/view?usp=sharing
+
+ds-nas-hq-01.ds.net --> DNS Name
+
+  - Enter user name and Password
+  - Edit "ds-nas-hq-01.ds.net" and expand "infrastructure" and select "KeePass Database"
+
+Now select "DevOps_admins-MacBook-Pro.local_Mar-03-110325-2020_Conflict"
+Password: wddegnmdldnl

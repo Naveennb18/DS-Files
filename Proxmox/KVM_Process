@@ -1,3 +1,4 @@
+
 [root@Jen-01 ~]# free -h
               total        used        free      shared  buff/cache   available
 Mem:            15G        1.0G         11G        714M        3.2G         13G
@@ -25,8 +26,11 @@ shm                       64M     0   64M   0% /var/lib/docker/containers/0013a7
 shm                       64M     0   64M   0% /var/lib/docker/containers/43063f3e2b413e7b446ea70f8c40311544728f7920b48c51f23e017b9348ad42/mounts/shm
 [root@Jen-01 ~]#
 
+passwd nnoorbhasha
+scp -r nnoorbhasha@chk-02.ich.rz02.deposit-solutions.com:/tmp/docker_tar_files /tmp/
 --------------------------------------------------------------
-
+Step:1
+------
 Initially Create DNS entry
 
   - repository = "pdns"
@@ -50,3 +54,188 @@ Initially Create DNS entry
       $ sudo git pull
 
       $ sudo make
+
+Step-3:
+-------
+Get the required details:
+
+  Example :
+
+  hostname: jen1.stg.infra.deposit
+
+  type : KVM
+
+  PVE details: pve2-8.prod
+
+  ip : 10.16.4.9
+
+  VLAN : 105
+
+- Login to the existing server and get the configuration
+
+   $ ssh nnoorbhasha@jen-01.stg.rz02.deposit-solutions.com
+
+   $ free -h
+
+   $ df -h
+
+Step-3:
+-------
+KVM Virtual Machines from template
+
+  - login to the Proxmox (Ex: https://pve2-1.prod.infra.deposit:8006/)
+
+  - Expand Datacenter
+  - Expand required pve
+  - clone from the image (debian-xfs-gpt-bios-template)
+  - Enter the below required details
+
+    - Name : hostname (jen1.stg.infra.deposit)
+    - VMID : Last three octets of ip address (Ex: 649 from the ip address 10.16.4.9 )
+
+  - Click on the new machine and configure the hardware
+
+    - Change Cores, memory allocation
+    - Don't forget the VLAN tag in the network config
+    - Disk size (click on Resize Disk and enter the incremental size)
+      - check the disk size of converting machine and make the changes accordingly on destination Machines
+
+        $ blkid
+
+        $ lsblk
+
+        $ df -h
+    - Add more disks if needed
+
+Step-4:
+-------
+Boot the machine and adjust the network config, salt minion, and hostname in the Proxmox console
+
+  - Hostname and Salt Minion
+
+    hostnamectl set-hostname <hostname>
+
+  - # Reconfigure salt minion
+
+    cp /etc/hostname /etc/salt/minion_id
+    rm -rf /etc/salt/pki/*
+    sed -i s/#master/master/g /etc/salt/minion
+    sed -i s/salt$/salt1.prod.infra.deposit/g /etc/salt/minion
+
+    # ONLY EXECUTE THIS IF YOU'RE DEPLOYING ON DC3 - Fix proxy config depending on datacenter
+    sed -i s/16/17/g /etc/apt/apt.conf
+
+  - Network config (/etc/network/interfaces)
+
+  -  $ vi /etc/network/interfaces
+
+      - Press Ctrl+v (the editor will be in visual studio)
+      - Place the pointer from where the lines should be uncommented
+      - modify the below values as required
+
+        # The primary network interface
+        allow-hotplug eth0
+        iface eth0 inet static
+        address 10.1..
+        network 10.1..0
+        netmask 255.255.255.0
+        broadcast 10.1..255
+        gateway 10.1..254
+        # dns-* options are implemented by the resolvconf package, if installed
+        dns-nameservers 10..1.124
+
+    - Reboot the machine in the proxmox console using the command "$ reboot"
+
+Step-5
+------
+Resize the filesystem
+
+  - Install the below packages
+
+    $ apt-get install gdisk parted -y
+
+  - Execute all the below commands and follow the outputs
+
+    $ root@hostname:/etc/apt# parted /dev/sda
+    (parted) p
+    Fix/Ignore? F
+    (parted) resizepart 2
+    Yes/No? y
+    End?  [<size>]? 100%
+    (parted) p
+    (parted) quit
+
+    $ root@hostname:/etc/apt# xfs_growfs /
+
+Step-6:
+-------
+Accept the key onto the Salt master
+
+  - ssh to salt master and add the minion id
+
+    $ ssh nnoorbhasha@salt1.prod.infra.deposit
+
+    $ salt-key -a <hostname> -y
+
+Step-7:
+-------
+ In the Proxmox console, run provisioning and highstate into the new machine
+
+   $ salt-call saltutil.sync_all
+   $ salt-call state.sls inventory
+   $ salt-call state.highstate saltenv=base
+   $ salt-call state.sls provisioning
+
+Step-8:
+-------
+Reboot the machine and SSH into it
+
+  $ ssh <username>@<hostname>
+
+-----------------------------------------------------------------------
+Run the docker formula if the docker doesn't exists on the newly created machine
+
+  $ salt-call -l debug state.sls docker
+
+1. Copy the docker images from source machine to the destination(newly created) machine
+
+  - ssh to the source machine
+
+    $ ssh <user>@<hostname>
+
+    $ sudo -i
+
+    $ docker images
+
+      - Copy all the docker images using the below command
+
+        $ docker save -o <path for generated tar file> <image name>
+
+        - Example:
+
+          $ docker save -o /tmp/docker_tar_files/ docker-registry.deposit-solutions.com/base/java8
+
+    - copy the files
+
+      $ scp -r /tmp/docker_tar_files/ username@destination_hostname:/tmp/
+
+      - If password needs to be set in the destination host, execute the below command
+
+        $ passwd nnoorbhasha
+
+  2. Load the docker images in the destination host
+
+    $ ssh <user>@<hostname>
+
+    $ sudo -i
+
+    $ docker load -i <image_name>.tar
+
+    - If there are more than one image to load, execute the below command
+
+      $ for i in *; do docker load -i $i; done
+
+    - Check the loaded docker images
+
+      $ docker images
+-----------------------------------------------------------------------
