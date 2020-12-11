@@ -1,0 +1,29 @@
+Add SSH key by using the below command
+
+  $ ssh-keygen
+
+  - Here, the ssh key will be generated in the local machine under the folder ~/.ssh/
+
+Add the newly created ssh key to the base-salt repository under base-salt/users/init.sls
+
+  - create a feature branch and commit the changes
+
+    - https://git.prod.infra.deposit/saltstack/base-salt/users/init.sls
+
+  - Raise a merge request and get it merged
+
+----------------------------------------------------------------------------------------------------
+
+Login to the salt master - salt1.prod.infra.deposit
+
+Run the below command
+
+  $ time salt-run fileserver.update
+
+  $ salt 'jen1.int*' state.apply users
+
+    - This is to apply the state to only one minion
+    - Check with the user if he is able to ssh to the above monion i.e., jen1.int.infra.deposit
+    - Once the user confirms, run the below command
+
+      $ salt '*' state.apply users

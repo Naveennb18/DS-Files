@@ -1,0 +1,5 @@
+Salt Formulas developed by an SRE
+Push them to the Gitlab for review
+Gitlab runners will run the tests against formulas on docker images
+Merge with master after Successful
+salt-master will pull the changes 
