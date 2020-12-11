@@ -10,6 +10,20 @@ Add the newly created ssh key to the base-salt repository under base-salt/users/
 
     - https://git.prod.infra.deposit/saltstack/base-salt/users/init.sls
 
+    - Add the below lines
+
+    subhashitha.mandala:
+      fullname: 'Subhashitha Mandala'
+      shell: /bin/bash
+      home: /home/subhashitha.mandala
+      uid: 60107
+      gid: 3000
+      groups:
+        - devOps
+      ssh_auth:
+        - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCrMI8Qpdwd5K6fGI/HGFmA6F89zjOHRHro2BZekeF8znTuC/MVE/9LFEL+yB7IVvGG+3dZYIxHm240ABzor5HEPnX8bnx6zzdUz77WuogdHQqKoSIyA78vbrPQJ0SJAJoJHalCUT0B7036nvVoOByIHbBX0tFrSThNbwG+v9WRTSZCW1hdK1vdRJJWnmcgASxB5649JeYsZJKBccD7kHHIB6W0LUHh0Su9/rYAuWUfJpoHq42divWkWsd3IAFqZELam1YTbtA/7QCibMC6W6iCgKIFlbeFNqNCkKkSarGWz/Wfz+x7YQZZFeki17sR4J7dBOl8s07rJQLQK4oMBWZCmkNNFKT2HqJFmgwzo4ZlSF6wNSzry0QE2h0alyzAmGt0gH6S5FI0kuU2eCqnXTJfgvx0ZhfuBDYRauUdt6b7xVohnK/MHT4LBN1rEiDHPu+rA7GmEt2rRgGPuLMc564sgNuPsezfNQm+fxKC/FX0RJh2WTFWpzoDGtkSjoe1tAU= subhash@techmoidentitys-MacBook-Pro.local
+
+
   - Raise a merge request and get it merged
 
 ----------------------------------------------------------------------------------------------------
