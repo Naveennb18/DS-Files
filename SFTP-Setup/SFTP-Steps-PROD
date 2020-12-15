@@ -200,7 +200,9 @@ Adding ip addresses to the firewall on Juniper
 
 Add files to the erasmus servers from local machine
 
-  $ scp myfile.txt remoteuser@remoteserver:/remote/folder/
+  $ scp myfile.txt remoteuser@remoteserver:/tmp/
+
+  $ cp /tmp/myfile.txt /sftp/user_name/outbox/
 
   Ex: scp test.csv nnoorbhasha@erasmus01.rz01.deposit-solutions.com:/tmp/
 
