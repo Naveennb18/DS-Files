@@ -1,0 +1,24 @@
+Delete the user by adding the following code in the base-salt repository
+
+  - https://git.prod.infra.deposit/saltstack/base-salt/users/init.sls
+
+  kvenkatesan:
+  absent: True
+  purge: True
+  force: True
+
+  ----------------------------------------------------------------------------------------------------
+
+  Login to the salt master - salt1.prod.infra.deposit
+
+  Run the below command
+
+    $ time salt-run fileserver.update
+
+    $ salt 'jen1.int*' state.apply users
+
+      - This is to apply the state to only one minion
+      - Check with the user if he is able to ssh to the above monion i.e., jen1.int.infra.deposit
+      - Once the user confirms, run the below command
+
+        $ salt '*' state.apply users

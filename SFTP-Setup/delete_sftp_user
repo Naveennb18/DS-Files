@@ -1,0 +1,7 @@
+User must be deleted
+Delete entry in /etc/rsyslog.d/
+Delete entry in /etc/lsyncd.d/
+Delete entry in /etc/lsyncd.conf
+Delete entry in /etc/rsyncd.conf
+Remove the ssh keys for RDS from Salt
+Remove the IPs from our firewall allow list
