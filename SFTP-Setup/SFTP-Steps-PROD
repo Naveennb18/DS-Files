@@ -130,10 +130,10 @@ Execute the state module
 
     - ssh to the below app servers first and execute the commands as root user
 
-        app1.prod.shared.deposit
-        app2.prod.shared.deposit
-        app3.prod.shared.deposit
-        app4.prod.shared.deposit
+        ssh nnoorbhasha@app1.prod.shared.deposit
+        ssh nnoorbhasha@app2.prod.shared.deposit
+        ssh nnoorbhasha@app3.prod.shared.deposit
+        ssh nnoorbhasha@app4.prod.shared.deposit
 
       $ sudo -i
 
@@ -163,10 +163,10 @@ Deployment on the Jenkins
 
         - Build with parameters and make a build on all the below mentioned target_host
           - target_host:
-              app1.prod.shared.deposit
-              app2.prod.shared.deposit
-              app3.prod.shared.deposit
-              app4.prod.shared.deposit
+              app1.prod.shared.deposit (1.1.0)
+              app2.prod.shared.deposit (1.1.0)
+              app3.prod.shared.deposit (1.1.0)
+              app4.prod.shared.deposit (1.1.0)
           - appliocation : ds-report-delivery-service
           - version : <The version number that we get during the salt state execution>
 
@@ -204,8 +204,10 @@ Add files to the erasmus servers from local machine
 
   $ cp /tmp/myfile.txt /sftp/user_name/outbox/
 
-  Ex: scp test.csv nnoorbhasha@erasmus01.rz01.deposit-solutions.com:/tmp/
+  Ex:
 
+    scp test.csv nnoorbhasha@erasmus01.rz01.deposit-solutions.com:/tmp/
+    scp test.xls nnoorbhasha@erasmus02.rz01.deposit-solutions.com:/tmp/
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 TEST
@@ -229,10 +231,21 @@ TEST
         sftp -i bib_sftp_id_rsa bib@app1.prod.shared.deposit
 
 -----------------------------------------------------------------------------------------
-user: swkbank
+PROD:
+-----
+user: deutsche
 server: xfer.deposit-solutions.com
 IP: 212.12.36.121
 
+connect using:
+sftp deutsche@xfer.deposit-solutions.com
 
-connect using:  sftp swkbank@xfer.deposit-solutions.com
+TEST:
+-----
+user: deutsche
+server: xfer-test.deposit-solutions.com
+IP: 212.12.36.120
+
+connect using:
+sftp deutsche@xfer-test.deposit-solutions.com
 -----------------------------------------------------------------------------------------
