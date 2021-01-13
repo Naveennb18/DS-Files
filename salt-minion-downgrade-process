@@ -1,5 +1,7 @@
 Centos-7:
 
+Downgrading prod salt-minion (app1.prod.c24.deposit) version from 3000.3 to salt-minion 2017.7.8 (Nitrogen)
+
   - Stop salt-minion
 
     $ systemctl status salt-minion
@@ -39,14 +41,14 @@ Centos-7:
 
     2. Save the following file to /etc/yum.repos.d/saltstack.repo:
 
-        [saltstack-repo]
-        name=SaltStack repo for RHEL/CentOS $releasever
-        baseurl=https://archive.repo.saltstack.com/yum/redhat/$releasever/$basearch/archive/2017.7.8
-        enabled=1
-        gpgcheck=1
-        gpgkey=https://archive.repo.saltstack.com/yum/redhat/$releasever/$basearch/archive/2017.7.8/SALTSTACK-GPG-KEY.pub
+      [saltstack-repo]
+      name=SaltStack repo for RHEL/CentOS $releasever
+      baseurl=https://archive.repo.saltstack.com/yum/redhat/$releasever/$basearch/archive/2017.7.8
+      enabled=1
+      gpgcheck=1
+      gpgkey=https://archive.repo.saltstack.com/yum/redhat/$releasever/$basearch/archive/2017.7.8/SALTSTACK-GPG-KEY.pub
 
-    3. Run sudo yum clean expire-cache
+    3. Run $ sudo yum clean expire-cache
 
     4. Install the salt-minion, salt-master, or other Salt components:
 
@@ -57,9 +59,29 @@ Centos-7:
         sudo yum install salt-cloud
         sudo yum install salt-api
 
-    5. (Upgrade only) Restart all upgraded services, for example:
+        $ sudo systemctl start salt-minion
 
-        sudo systemctl restart salt-minion
+    5. Configure salt master to the minion server
+
+        $ vi /etc/salt/minion
+
+          - Add the masters dns to the "master" value 
+
+    6. (Upgrade only) Restart all upgraded services, for example:
+
+        sudo systemctl restart salt-minion (If any issues reports, check the salt-minion config file "/etc/salt/minion")
 
 
 Check the status from salt master
+
+Validation:
+
+    sudo salt "app1.prod.c24.deposit" test.ping
+
+    sudo salt "app1.prod.c24.deposit" test.version
+
+Troubleshooting:
+
+    $ sudo salt-key --delete=<minion-id> (To delete the salt-minion)
+
+    $ sudo salt-key --accept=<minion-id> (To add the salt-minion)

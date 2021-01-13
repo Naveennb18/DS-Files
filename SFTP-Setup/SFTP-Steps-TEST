@@ -2,7 +2,7 @@ Login to the daad server
 
   - ssh to daad machine
 
-    ssh daad.rz01.deposit-solutions.com
+    ssh nnoorbhasha@daad.rz01.deposit-solutions.com
 
 Add new User
 
@@ -29,7 +29,7 @@ Add new User
     mkdir temp
     cd temp
     bank=<<BANK>>
-    bankenvironment=<<ENV>> Example: prod
+    bankenvironment=stg
     openssl genpkey -algorithm RSA -out ${bank}_sftp_id_rsa -pkeyopt rsa_keygen_bits:4096
     openssl rsa -in ${bank}_sftp_id_rsa -pubout > ${bank}_sftp_id_rsa.pub
     ssh-keygen -i -m PKCS8 -f ${bank}_sftp_id_rsa.pub > ${bank}_sftp_id_rsa_pkcs8.pub
@@ -99,7 +99,7 @@ Add new User
 
           gpg --import salt-master-prod-pubkey.gpg
 
-  $ ssh nnoorbhasha@salt1.test.infra.deposit
+  $ ssh nnoorbhasha@salt1.prod.infra.deposit
 
   $ sudo -i
 
@@ -113,7 +113,7 @@ Add new User
 
   - ssh to the below app servers first and execute the commands as root user
 
-      app1.stg.shared.deposit
+      ssh nnoorbhasha@app1.stg.shared.deposit
 
     $ sudo -i
 
@@ -130,7 +130,7 @@ Add new User
 
         - Example:
 
-          - /usr/lib/comonea/dist/ds-report-delivery-service/report-delivery-service-1.0.2.jar (Version = 1.0.2)
+          - /usr/lib/comonea/dist/ds-report-delivery-service/report-delivery-service-1.0.2.jar (Version = 1.1.0)
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 Deployment on the Jenkins
@@ -176,5 +176,7 @@ Adding ip addresses to the firewall on Juniper
 
       - Edit the name of the tenant where it's need to be added from the "configure" column (EXT_SFTP_TENANTS2)
       - Add the group name that was created in the previous section from right to left
+
+  3. Add the ip address to the 186 policy
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
