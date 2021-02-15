@@ -65,11 +65,11 @@ Downgrading prod salt-minion (app1.prod.c24.deposit) version from 3000.3 to salt
 
         $ vi /etc/salt/minion
 
-          - Add the masters dns to the "master" value 
+          - Add the masters dns to the "master" value
 
     6. (Upgrade only) Restart all upgraded services, for example:
 
-        sudo systemctl restart salt-minion (If any issues reports, check the salt-minion config file "/etc/salt/minion")
+        sudo systemctl restart salt-minion 
 
 
 Check the status from salt master
