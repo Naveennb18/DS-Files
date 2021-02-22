@@ -1,0 +1,100 @@
+Prerequisites:
+
+  - Basic command line tools
+  - General Networking concepts
+
+Topics:
+
+  - Setting up Salt minions and salt master to orchestrate the servers
+  - Targeting specific minions
+  - Running commands installing packages and managing files on minions
+  -  Building a basic salt state to manage a collection of minions
+
+Salt Open:
+
+  - Free and open-source
+  - Commercial support available
+  - automation
+
+Salt Alternatives:
+
+  - Ansible
+
+    - Agent-less
+    - Slower Authentication
+    - SSH login is required for each transaction
+    - Gentle learning curve and less powerful
+    - Can use agents with extra setup
+    - salt-ssh is the alternative for Ansible
+
+  - Puppet
+
+    - Steeper learning curve
+    - Ruby and Domain Specific Language
+
+  - Chef
+
+    - Steeper learning curve
+    - Ruby and Erlang
+
+  - SaltStack:
+
+    - Active and Growing user base
+    - Well document
+    - Support for other network equipment
+    - Commercial support
+    - Core features are matured and solid with the first release dating back to 2011
+
+IAAC (Infrastructure As A Code)
+
+  - Automating the configuration, deployment and maintenance of business critical infrastructure through files that define an intended state of
+    a collection of servers and other IT infrastructure instead of human readable checklist to configure and deploy new servers
+
+Salt Architecture:
+
+  - salt-master
+
+    - Master control Program
+    - Each device manage by the master runs a process called salt-minion
+    - Typically a master can handle 700 minions to 1000s
+
+  - salt-minion
+
+    - Receives all instructions and configuration information from the salt-master through an authenticated and encrypted communication link (authorized_keys)
+
+salt-ssh Architecture:
+
+  - salt-ssh is a powerful tool can even be used to install salt-minion with salt automation
+  - Salt is an agent based system
+  - salt only requires open ports on the Master
+
+- Accessive network latency or conjunction between the master and minions can reduce the reliability of control response messages.
+- Minions spread across multiple global datacenters, it may be helpful to use a salt-proxy in each remote location called a "salt syndic server"(Proxy Master)
+- In some cases simply adjusting the timeout parameters on the master may overcome these limitations.
+- when using salt to manage a fleet of remote or IoT devices, syndic is not recommended. In this case a longer timeouts are better solutions.
+- When using any configuration management tools we have highly privileged access to the target systems.
+- Security certificates and keys are exchanged when setting up Minions.
+
+Public key cryptography:
+
+  - Public key cryptography is a method used by TLS(Transport Layer Security - is an encryption protocol that protects internet communications) to establish
+    HTTPS and many other types of secure connections requires an identical shared secret key to encrypt and decrypt messages efficiently.
+
+  - Identical Symmetric Keys:
+    - Session Encryption uses Symmetric cryptography where both the sender and the receiver uses the same secret key to encrypted and decrypt confidential information.
+
+  - Asymmetric Key Pair:
+    - Public key cryptography required more computation but it breaks a key into two pieces which are called Asymmetric Keys.
+    - One to encrypt and another for decrypt the message and is mathematically impractical to derive one key from another.
+    - It allows one way private conversation. So, combining two sets of keys enables a message to be encrypted in both directions
+    - One of the key is kept as private and the other is provided to the end of the connection where one key is used to encrypt the data and other is required to decrypt it
+
+  - Master has the private key that only the minions who have the other half of the key can decrypt
+  - If the master doesn't have the correct key, it will fail the verification and the minion refuses to connect and provides a warning.
+  - Similarly, the Minions each generates a private key during initial setup and the master has the copy of other half allowing the master
+    to verify that each minion is authorised and not being impersonated.
+  - The master will not accept connection from any minions that have not been previously accepted
+  - The asymmetric encryption keys are used to setup a temporary set of identical or symmetric encryption keys.
+  - These temporary keys are identical and shared by both ends of the link, encrypting and decrypting data with symmetric keys is faster and more efficient
+    than with a similarly strong asymmetric key set.
+  - After key acceptance, traffic is fully authenticated and encrypted protecting all salt activities.
