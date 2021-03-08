@@ -1,0 +1,25 @@
+Shutdown the VMs (KVM or LXC container)
+Take Backup
+Delete the VMs
+Remove Salt Keys from Salt Master (salt1.prod.infra.deposit)
+
+   $ salt-key -L | grep <server_name>
+   $ salt-key -d <server_name>
+
+Remove salt states/pillars
+
+  - Repo: infra-salt
+  - search for entries and delete them
+  - Open merge request with all the changes from feature branch to the master
+
+Remove from monitoring
+
+  - Prometheus config was checked for manual entries
+
+      Go to http://prom1.prod.monitor.deposit:9090/
+      Go to http://prom2.prod.monitor.deposit:9090/
+
+      - Serach for expression  up{instance=~'<server_name>.*'}
+      - If returned any results, need to delete entries manually from below repository
+
+          saltstack/monitor-salt/pillar/prometheus/

@@ -1,0 +1,9 @@
+Get the access to the consul servers
+
+  - $ ssh nnoorbhasha@consul1.test.infra.deposit
+
+    - Run the below command on consul server. It will produce a token.
+
+      $ salt-call pillar.item consul:config:acl_master_token
+
+        - Copy the token and paster it in the consul UI under settings

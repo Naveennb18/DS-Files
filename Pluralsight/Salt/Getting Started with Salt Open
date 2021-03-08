@@ -98,3 +98,6 @@ Public key cryptography:
   - These temporary keys are identical and shared by both ends of the link, encrypting and decrypting data with symmetric keys is faster and more efficient
     than with a similarly strong asymmetric key set.
   - After key acceptance, traffic is fully authenticated and encrypted protecting all salt activities.
+
+  - Signing Certificates:
+    - Salt provides master key signatures on minions and minion key signatures on master which allows to verify each device manually to avoid middle attacks
