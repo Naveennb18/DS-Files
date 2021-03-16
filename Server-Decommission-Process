@@ -23,3 +23,40 @@ Remove from monitoring
       - If returned any results, need to delete entries manually from below repository
 
           saltstack/monitor-salt/pillar/prometheus/
+
+Remove DNS entries
+
+  - Repo : pdns
+  - serch for the entries and remove
+  - run deploy.sh file after merging the changes to master
+
+      naveen@TI-MacBook-Pro pdns % ./deploy.sh
+
+    - If any issues persists during the execution, run the below commands manually
+
+      $ ssh nnoorbhasha@dns-00.pro.rz02.deposit-solutions.com
+
+      $ cd /etc/pdns
+
+      $ sudo git pull
+
+      $ sudo make
+
+Delete Firewall entries
+
+  - Access the below address and search for the entries
+
+    10.16.7.254 (Password will be on Macpass)
+
+    - Check for addresses (Policy & Objects -> Addresses)
+
+      - Check if any Ref.'s associated with it
+
+        - Note down the policy (ids)
+        - Ex: 1209 , 1211, 1215, 1222, 1203, 1216,
+        - 523, 538, 530, 517, 524, 538, 539, 512
+          - Delete the server_name from source list
+
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------------
