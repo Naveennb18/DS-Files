@@ -233,12 +233,12 @@ TEST
 -----------------------------------------------------------------------------------------
 PROD:
 -----
-user: netfonds
+user: librabank
 server: xfer.deposit-solutions.com
 IP: 212.12.36.121
 
 connect using:
-sftp netfonds@xfer.deposit-solutions.com
+sftp librabank@xfer.deposit-solutions.com
 
 TEST:
 -----
@@ -249,3 +249,10 @@ IP: 212.12.36.120
 connect using:
 sftp deutsche@xfer-test.deposit-solutions.com
 -----------------------------------------------------------------------------------------
+
+
+# mkdir postova/outbox/id_card_copies
+# mkdir postova/outbox/cor
+# cd postova
+# chown -R postova:sftp-user *
+# tree

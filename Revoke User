@@ -1,0 +1,22 @@
+Remove user (developer) from machines using salt:
+
+  ssh salt1.prod.infra.deposit
+
+  salt '*' cmd.run "userdel -r USER" (replace USER with the username of the user you want to revoke access from)
+
+Remove user (developer) from MySQL Databases:
+
+  - Navigate to the repo database-scripts, provide the user name in the script and run the below scripts:
+      1. mysql_remove_users.sh
+      2. mysql_remove_users_non_prod.sh.
+
+Remove admin (infra) from machines via salt pillar:
+
+  - Navigate to the repo saltstack/base-salt/pillar/users, open the init.sls, and remove the user from under "#Infrastructure users", and add a section for the user above it as shows below:
+
+    user_name:
+      absent: True
+      purge: True
+      force: True
+      
+    - Update the fileserver on the salt master by running salt-run fileserver.update then run salt -C '*' state.sls users
