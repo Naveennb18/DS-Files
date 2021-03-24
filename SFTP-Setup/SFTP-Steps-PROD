@@ -249,7 +249,7 @@ IP: 212.12.36.120
 connect using:
 sftp deutsche@xfer-test.deposit-solutions.com
 -----------------------------------------------------------------------------------------
-
+# Setup id_cards, Certificates of residence, Reporting
 
 # mkdir postova/outbox/id_card_copies
 # mkdir postova/outbox/cor
