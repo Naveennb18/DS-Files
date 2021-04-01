@@ -1,0 +1,2 @@
+
+curl -H "X-Consul-Token:$(cat /tmp/my_token | tr '\n' ' ')" --noproxy 127.0.0.1 'http://127.0.0.1:8500/v1/agent/service/deregister/app1.stg.shared.deposit-sbaff-trustor'

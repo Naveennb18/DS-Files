@@ -101,3 +101,72 @@ Public key cryptography:
 
   - Signing Certificates:
     - Salt provides master key signatures on minions and minion key signatures on master which allows to verify each device manually to avoid middle attacks
+    - If security not required, we can also enable auto-accept minion key from Master
+
+Migration and Scaling:
+
+  - IT infrastructure maintenance tasks
+
+    - Servers, Network gear
+
+  - Network overload
+
+    - More traffic is on the way
+
+  - Just duplicating the server won't scale
+  - Prepare to move to the cloud
+
+First step with the salt:
+
+  - Offline minions will not receive the commands unless they are re-run on the master when the minion is online
+  - "salt-call" runs in the context of the user who runs it
+  - If the minions run as a non-root user, it needs elevated privileges for most system administration tasks
+  - The Master can also be a minion
+
+File management and Modules:
+
+  - "salt-cp" enables a quick copy of files or directories of files to minions
+
+    - Example:
+
+      Master:
+
+        user@master: ~ $ touch testfile
+        user@master: ~ $ sudo salt-cp 'minion01' testfile /home/user1/testfile
+
+      Minion:
+
+        user1@minion: ~ $ ls test*
+        testfile
+
+  - "salt-cp" is not ideal for larger files (>1MB)
+  - Don't use "salt-cp" to copy security -sensitive files
+  - We can create our own custom modules in Python or Cython if a buil-in module is not available
+
+    - Example:
+
+      $ sudo salt minion-name cloud.create my-ec2-config myinstance image=ami-1248fca2 size='t1.micro' ssh_username=ec2-user securitygroup=default delvol_on_destroy=True
+
+      - Here, in the above example, "cloud.create", creates VMs on AWS.
+
+  - Here are some example salt modules
+
+    - Databases
+    - System Monitoring
+    - User Management
+    - Filesystem Management
+    - Cron Jobs
+    - Virtualization
+
+  - The two most used modules are actually "Virtual Modules". They are:
+
+    - Package Module : Manage software installations, removal, updates
+    - Service Module: Enables, disables, starts and stops services
+
+    - Example:
+
+      Master:
+
+        user@master: ~ $ sudo salt '*' system.poweroff
+
+          - The above command will shutdown all the minions which are connected to the master 
