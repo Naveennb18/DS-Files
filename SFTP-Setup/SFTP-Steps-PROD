@@ -316,3 +316,7 @@ Update the scripts on ebics server (ebics1.rz01.deposit-solutions.com)
        - pre_check_all.sh
        - collect_all.sh
        - send_cors.sh
+
+---------------------------------------------------------------------------------------------------
+
+Finally, Get the redash query and attach the same to the ticket
