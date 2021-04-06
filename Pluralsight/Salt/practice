@@ -1,0 +1,18 @@
+192.168.0.8 - Salt Master
+
+192.168.0.10 - Salt Minion01
+
+192.168.0.11  - Salt Master (2017.7)
+
+
+
+
+===========================================
+
+root@salt-master:/opt# sudo salt-key -F master
+Local Keys:
+master.pem:  e2:bf:aa:fd:5d:e6:65:4b:63:38:de:72:cd:ed:6f:51:42:24:3d:48:d1:2e:26:99:67:56:b0:de:10:db:1f:78
+master.pub:  14:19:46:29:b0:ec:70:34:8e:32:e7:29:7d:95:21:7c:be:88:25:c0:98:42:ca:d0:ec:19:15:89:23:e7:77:23
+root@salt-master:/opt#
+
+=================================================

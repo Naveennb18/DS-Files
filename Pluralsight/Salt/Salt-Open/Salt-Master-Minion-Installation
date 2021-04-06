@@ -1,0 +1,131 @@
+Installing a Salt-Master:
+
+Repository or Bootstrap Installations:
+
+  - The source list to install salt master are as follows:
+
+    - OS Releases (OS repositories often run behind the few releases to the latest stable versions)
+
+      - May lag released version
+      - So, configure your package manager to use the repositories at https://repo.saltstack.com
+
+    - Bootstrap script
+
+      - Use Bootstrap script to automatically detect and download the latest version of releases
+
+  - How to keep salt versions consistent across all platforms
+
+    - Salt-Master is installed in GNU Linux hosts
+
+      - Mac Master is not officially supported
+      - Mac minions fully supported
+
+    - Use the default python 3 unless supporting legacy python 2.x Minions
+
+    - Always update the Master to the newer version before updating the minions to avoid potential incompatibilities
+
+    - The master can upgrade the minions with salt states
+
+
+  - If we install using the OS package manager, particularly if we use our own repositories to control software version, we should be able to keep all the systems on the same version of salt
+
+  - In a smaller organisations, we can specify which version of salt we want to install on each device.
+  - The bootstrap script take a command line arguments to support selection of a specific version
+  - Example:
+
+    - Bootstrap Installation:
+
+        $ sudo install-salt.sh -M -P git v3000.3 (For python 3)
+
+        - To install much older version with old Python use the below command
+
+          $ sudo install-salt.sh -M -P -x python2.7 git v2017.7 (Which is already deprecated from 2020)
+
+====================================================================================================================================================================================
+
+Firewalls and Master executables:
+---------------------------------
+
+Firewalls:
+
+  - Normal salt-master operations
+
+    - For a typical salt-master installation, you may need to adjust the firewall for incoming connections
+
+      - TCP ports 4505 and 4506 should be open only on the master
+
+  - salt-ssh master operations
+
+    - All minions need an ssh port(22) to be opened, accessible by the master
+
+  - No other open ports are required
+
+  - Remember via both of these methods are supported, you don't have to open the ports on both the ends but choose which method to use
+
+    - Normal operation is faster but if salt-minion is not running on the target machines, salt-ssh works
+
+Salt Services:
+
+  - salt supports a vast library of configurations and related services. The most used service are
+
+    - Package Management
+    - File Management
+
+      - You can install, upgrade, downgrade or uninstall a package or collection of packages
+
+    - Abstraction for OS-native tools
+
+      - Dependency management
+
+    - Files deployed to the minions will be stored on Master and/or Git
+
+      - Use version control for configuration (Master files) files and for files deployed to minions
+
+      - This is used for the minions to pull their files directly from the repository to avoid the unnecessary steps during testing and deploying new minion files
+
+    - Salt can also enable, disable, start and stop the services on the Minions
+
+====================================================================================================================================================================================
+
+Master installation and Keys:
+
+  - Installing the salt master using bootstrap script
+
+    $ curl -L https://bootstrap.saltstack.com -o install-salt.sh
+
+      - It downloads the bootstrap script and saved as install-salt.sh
+
+    $ sudo sh install.sh -M -P git v3000.3
+
+      - Here,
+
+        '-M' flag indicates to install salt-master on the machine
+        '-P' handles a few corner cases of certain operating systems but is not mandatory
+        'git v3000.3' used to indicate the version which is needed to be installed
+
+  - Installing the salt-master using Repositories
+
+    # Download key
+    $ sudo curl -fsSL -o /usr/share/keyrings/salt-archive-keyring.gpg https://repo.saltproject.io/py3/debian/10/amd64/latest/salt-archive-keyring.gpg
+
+    # Create apt sources list file
+    $ echo "deb [signed-by=/usr/share/keyrings/salt-archive-keyring.gpg] https://repo.saltproject.io/py3/debian/10/amd64/latest buster main" | sudo tee /etc/apt/sources.list.d/salt.list
+
+    $ sudo apt-get update
+
+    $ sudo apt-get install salt-master
+
+    $ salt --version
+
+      - To verify the salt installation
+
+  - Once the salt is successfully installed, we should verify the signatures of encryption keys on the master machine using below command:
+
+    $ sudo salt-key -F master
+
+      - Take a note of the key signatures displayed because we need them later to guarantee a secure connection between a master and its Minions
+
+Master Directory Structure:
+
+  -
+=================================================================================================================================================================================

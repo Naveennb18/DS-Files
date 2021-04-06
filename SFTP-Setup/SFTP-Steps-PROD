@@ -256,3 +256,63 @@ sftp deutsche@xfer-test.deposit-solutions.com
 # cd postova
 # chown -R postova:sftp-user *
 # tree
+
+# Setup BIC code on Jenkins Jobs
+
+Jenkins
+ALL_INVESTMENTDAY_M__anticipate_transfer_date_for_valid_tickets
+ALL_INVESTMENTDAY_M__move_invalid_tickets_bank_wise
+ALL_INVESTMENTDAY_M__close_tranches
+ALL_INVESTMENTDAY_M__set_earliest_transfer_date_payin
+ALL_INVESTMENTDAY_M__set_earliest_transfer_date_payout
+All_m__check_files_on_erasmus
+ALL_INVESTMENTDAY_M__set_transaction_date_and_payindeadline
+ALL_upload_single_id_card_or_cor
+ALL_INVESTMENTDAY_M__change_COR_creationdate
+ALL_upload_cors
+ZP_UpdatePIBs
+C24_UpdatePIBs
+ALL_M__prepare_COR_list
+ALL_M__prepare_COR_list_automatically
+
+---------------------------------------------------------------------------------------------
+Update the scripts on ebics server (ebics1.rz01.deposit-solutions.com)
+
+  $ ssh ebics1.rz01.deposit-solutions.com
+
+  $ su - idcard
+
+  [idcard@ebics1 persoupload]$ vi upload_single_id_card_or_cor.sh
+
+    - Add the bank details as below
+    - Example:
+
+      change-1:
+
+        BREL)
+                BANK='libra'
+                ;;
+
+      change-2:
+
+                BREL)
+                        sftp ${SSHUSER}@${HOST} << EOF
+                                cd outbox
+                                cd id_card_copies
+                                put $FILE
+          EOF
+                        ;;
+
+    $ exit
+
+    $
+
+    - switch to the "cor" user and make entries on the below files:
+
+      $ su - cor
+
+       - check_for_duplicates.sh
+       - distribute.sh
+       - pre_check_all.sh
+       - collect_all.sh
+       - send_cors.sh

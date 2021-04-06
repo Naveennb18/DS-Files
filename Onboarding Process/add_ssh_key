@@ -37,7 +37,7 @@ Run the below command
   $ salt 'jen1.int*' state.apply users
 
     - This is to apply the state to only one minion
-    - Check with the user if he is able to ssh to the above monion i.e., jen1.int.infra.deposit
+    - Check with the user if he is able to ssh to the above minion i.e., jen1.int.infra.deposit
     - Once the user confirms, run the below command
 
       $ salt '*' state.apply users

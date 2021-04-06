@@ -180,3 +180,20 @@ Adding ip addresses to the firewall on Juniper
   3. Add the ip address to the 186 policy
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+PROD:
+-----
+user: postova
+server: xfer.deposit-solutions.com
+IP: 212.12.36.121
+
+connect using:
+sftp postova@xfer.deposit-solutions.com
+
+TEST:
+-----
+user: postova
+server: xfer-test.deposit-solutions.com
+IP: 212.12.36.120
+
+connect using:
+sftp postova@xfer-test.deposit-solutions.com

@@ -50,6 +50,8 @@ IAAC (Infrastructure As A Code)
   - Automating the configuration, deployment and maintenance of business critical infrastructure through files that define an intended state of
     a collection of servers and other IT infrastructure instead of human readable checklist to configure and deploy new servers
 
+=================================================================================================================================================================================
+
 Salt Architecture:
 
   - salt-master
@@ -169,4 +171,6 @@ File management and Modules:
 
         user@master: ~ $ sudo salt '*' system.poweroff
 
-          - The above command will shutdown all the minions which are connected to the master 
+          - The above command will shutdown all the minions which are connected to the master
+
+==============================================================================================================================================================================
