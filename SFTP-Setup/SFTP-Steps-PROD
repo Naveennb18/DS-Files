@@ -320,3 +320,71 @@ Update the scripts on ebics server (ebics1.rz01.deposit-solutions.com)
 ---------------------------------------------------------------------------------------------------
 
 Finally, Get the redash query and attach the same to the ticket
+
+---------------------------------------------------------------------------------------------------
+SFTP setup
+
+  Added new user on both Erasmus servers
+  committed and merged the required changes on git repositories (shared-salt & shared-config-vars)
+  file server update on salt-master
+  execute the state module (files) on all the app servers
+  Deployment on the Jenkins
+  Add the firewall policies on juniper
+  Add the test files on Erasmus outbox folder (if any provided)
+
+Setup CoR
+----------
+  Create respective directories (/sftp/<bank_name>/outbox/cor)
+  Add public ssh-keys of cor user from ebics server to Erasmus server (/sftp/<bank>/.ssh/authorized_keys)
+  Create Bank folders in
+    ebics1:/home/cor/storage/COR_storage/COR_CHECK24
+    ebics1:/home/cor/storage/COR_storage/COR_ZINSPILOT
+
+  Update the bank details on the scripts of ebics server under "/home/cor/"
+    send_cors.sh
+    check_for_duplicates.sh
+    collect_all.sh
+    collect_c24.sh
+    collect.sh
+    distribute.sh
+    pre_check_all.sh
+    pre_check_collect_c24.sh
+    pre_check_collect.sh
+    upload_single_id_card_or_cor.sh
+
+  Add BIC to following Jenkins Jobs
+    https://prodops-jenkins.deposit-solutions.com/job/ALL_upload_single_id_card_or_cor/configure
+    https://prodops-jenkins.deposit-solutions.com/job/ALL_INVESTMENTDAY_M__change_COR_creationdate/configure
+
+  Add BankFolderName to following Jenkins Jobs
+    https://prodops-jenkins.deposit-solutions.com/job/ALL_M__prepare_COR_list/configure
+    https://prodops-jenkins.deposit-solutions.com/job/ALL_M__prepare_COR_list_automatically/configure
+
+Get the Redash query
+
+Setup IDCard
+------------
+Create respective directories (/sftp/<bank_name>/outbox/id_card_copies)
+  Add public ssh-keys of idcard user from ebics server to Erasmus server (/sftp/<bank>/.ssh/authorized_keys)
+  Add entries to the repository https://git.prod.infra.deposit/devops/data-inspection and merge to master
+Create ListView with BankName on ProdOps Jenkins
+  https://prodops-jenkins.deposit-solutions.com/job/Librabank_create_ID_card_folder_to_transfer/
+  https://prodops-jenkins.deposit-solutions.com/job/Librabank_transfer_ID_cards/
+Create bank folder in ebics1:/home/idcard/
+
+Add BIC to Job Params on ProdOps Jenkins
+  ALL_INVESTMENTDAY_M__anticipate_transfer_date_for_valid_tickets
+  ALL_INVESTMENTDAY_M__move_invalid_tickets_bank_wise
+  ALL_INVESTMENTDAY_M__close_tranches
+  ALL_INVESTMENTDAY_M__set_earliest_transfer_date_payin
+  ALL_INVESTMENTDAY_M__set_earliest_transfer_date_payout
+  ALL_INVESTMENTDAY_M__set_transaction_date_and_payindeadline
+  ZP_UpdatePIBs
+  C24_UpdatePIBs
+  ALL_upload_single_id_card_or_cor
+  ALL_INVESTMENTDAY_M__change_COR_creationdate
+
+Add Bank Name to job params on ProdOps Jenkins
+  ALL_M__prepare_COR_list
+  ALL_M__prepare_COR_list_automatically
+  All_m__check_files_on_erasmus
