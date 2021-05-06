@@ -1,0 +1,8 @@
+
+Generate Password using the below command:
+
+    ansible-vault encrypt_string 'asdasdasdasd' --vault-id prd@~/.ansible/.vault_pass.txt
+​
+Generate pgp key using below command:
+
+    echo -n 'asdasdasdasd' | gpg --encrypt --armor --trust-model always -r salt-prod@deposit-solutions.com

@@ -24,6 +24,10 @@ Add new User
 
                 ssh-keygen -i -f ssh2.pub > openssh.pub
 
+            - For other format use the following command:
+
+                ssh-keygen -i -m PKCS8 -f <pubkey.pub> > openssh.pub
+
   - A new user will be added by using /root/bin/new_sftp_user.sh on  both erasmus.
 
       ls /sftp/<user>
