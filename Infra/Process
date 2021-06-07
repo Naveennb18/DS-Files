@@ -2,4 +2,6 @@ Salt Formulas developed by an SRE
 Push them to the Gitlab for review
 Gitlab runners will run the tests against formulas on docker images
 Merge with master after Successful
+This is Naveen -- for testing conflics from Subhash
+we have to delete these conflicts
 salt-master will pull the changes 
